@@ -64,7 +64,61 @@ class Tree {
 	 * Function that renders the tree
 	 */
 	renderTree() {
+		//append svg element
+		let svg = d3.select("body").append("svg")
+			.attr("width", 1200)
+			.attr("height", 1200);
 
+		//get relations
+		let relation = [];
+		for (let n of this.nodes) {
+			for (let m of n.children) {
+				relation.push([n, m]);
+			}
+		}
+
+		//append lines
+		let line = svg.selectAll("line")
+			.data(relation);
+		let newline = line.enter().append("line")
+			.attr("x1", function(d) {
+				return d[0].level * 150 + 50;
+			})
+			.attr("y1", function(d) {
+				return d[0].position * 150 + 50;
+			})
+			.attr("x2", function(d) {
+				return d[1].level * 150 + 50;
+			})
+			.attr("y2", function(d) {
+				return d[1].position * 150 + 50;
+			})
+
+		//append circles
+		let circle = svg.selectAll("circle")
+			.data(this.nodes)
+		let newCircle = circle.enter().append("circle")
+			.attr("cx", function(d) {
+				return d.level * 150 + 50;
+			})
+			.attr("cy", function(d) {
+				return d.position * 150 + 50;
+			})
+			.attr("r", 50);
+
+		//append texts
+		let text = svg.selectAll("text")
+			.data(this.nodes)
+		let newText = text.enter().append("text")
+			.text(function(d) {
+				return d.name;
+			})
+			.attr("x", function(d) {
+				return d.level * 150 + 50;
+			})
+			.attr("y", function(d) {
+				return d.position * 150 + 50;
+			})
+			.attr("class", "label");
 	}
-		
 }
