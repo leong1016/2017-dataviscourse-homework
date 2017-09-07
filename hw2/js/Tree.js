@@ -31,19 +31,42 @@ class Tree {
 	//Assign Positions and Levels by making calls to assignPosition() and assignLevel()
 		this.assignLevel(this.nodes[0], 0);
 		this.assignPosition(this.nodes[0], 0);
-		console.log(this.nodes);
 	}
 
 	/**
 	 * Recursive function that assign positions to each node
 	 */
+	// assignPosition(node, position) {
+	// 	if (node == null) {
+	// 		return;
+	// 	}
+	// 	node.position = position;
+	// 	for (let i = 0; i < node.children.length; i++) {
+	// 		let a = node.position;
+	// 		let b = this.basic[(node.level) + 1];
+	// 		let c = a > b ? a : b;
+	// 		this.assignPosition(node.children[i], c);
+	// 	}
+	// 	this.basic[node.level+1] += node.children.length;
+	// }
+
 	assignPosition(node, position) {
 		if (node == null) {
 			return;
 		}
 		node.position = position;
+		let max = -1;
+		for (let j = 0; j < this.nodes.length; j++) {
+			if (this.nodes[j].level == node.level + 1 && this.nodes[j].position > max) {
+				max = this.nodes[j].position;
+			}
+		}
+		max += 1;
+		if (position > max) {
+			max = position;
+		}
 		for (let i = 0; i < node.children.length; i++) {
-			this.assignPosition(node.children[i], node.position + i);
+			this.assignPosition(node.children[i], max + i);
 		}
 	}
 
