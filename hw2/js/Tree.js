@@ -45,7 +45,7 @@ class Tree {
 	// 		let a = node.position;
 	// 		let b = this.basic[(node.level) + 1];
 	// 		let c = a > b ? a : b;
-	// 		this.assignPosition(node.children[i], c);
+	// 		this.assignPosition(node.children[i], c + i);
 	// 	}
 	// 	this.basic[node.level+1] += node.children.length;
 	// }
@@ -92,52 +92,36 @@ class Tree {
 			.attr("width", 1200)
 			.attr("height", 1200);
 
-		//append line
-		let newnodes = [];
+        //get array of children
+		let children = [];
 		for (let i = 1; i < this.nodes.length; i++) {
-			newnodes.push(this.nodes[i]);
+			children.push(this.nodes[i]);
 		}
-		let line = svg.selectAll("line")
-			.data(newnodes);
-		let newline = line.enter().append("line")
-			.attr("x1", function(d, i) {
-				return d.level * 150 + 50;
-			})
-			.attr("y1", function(d, i) {
-				return d.position * 150 + 50;
-			})
-			.attr("x2", function(d, i) {
-				return d.parentNode.level * 150 + 50;
-			})
-			.attr("y2", function(d, i) {
-				return d.parentNode.position * 150 + 50;
-			})
+
+        //append edges
+		let edge = svg.selectAll("line")
+			.data(children)
+            .enter().append("line")
+			.attr("x1", d => d.level * 200 + 50)
+			.attr("y1", d => d.position * 120 + 50)
+			.attr("x2", d => d.parentNode.level * 200 + 50)
+			.attr("y2", d => d.parentNode.position * 120 + 50);
 
 		//append circles
 		let circle = svg.selectAll("circle")
 			.data(this.nodes)
-		let newCircle = circle.enter().append("circle")
-			.attr("cx", function(d) {
-				return d.level * 150 + 50;
-			})
-			.attr("cy", function(d) {
-				return d.position * 150 + 50;
-			})
+		    .enter().append("circle")
+			.attr("cx", d => d.level * 200 + 50)
+			.attr("cy", d => d.position * 120 + 50)
 			.attr("r", 50);
 
 		//append texts
 		let text = svg.selectAll("text")
 			.data(this.nodes)
-		let newText = text.enter().append("text")
-			.text(function(d) {
-				return d.name;
-			})
-			.attr("x", function(d) {
-				return d.level * 150 + 50;
-			})
-			.attr("y", function(d) {
-				return d.position * 150 + 50;
-			})
-			.attr("class", "label");
+		    .enter().append("text")
+			.attr("x", d => d.level * 200 + 50)
+			.attr("y", d => d.position * 120 + 50)
+			.classed("label", true)
+            .text(d => d.name.toUpperCase());
 	}
 }
