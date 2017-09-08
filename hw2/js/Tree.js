@@ -92,29 +92,25 @@ class Tree {
 			.attr("width", 1200)
 			.attr("height", 1200);
 
-		//get relations
-		let relation = [];
-		for (let n of this.nodes) {
-			for (let m of n.children) {
-				relation.push([n, m]);
-			}
+		//append line
+		let newnodes = [];
+		for (let i = 1; i < this.nodes.length; i++) {
+			newnodes.push(this.nodes[i]);
 		}
-
-		//append lines
 		let line = svg.selectAll("line")
-			.data(relation);
+			.data(newnodes);
 		let newline = line.enter().append("line")
-			.attr("x1", function(d) {
-				return d[0].level * 150 + 50;
+			.attr("x1", function(d, i) {
+				return d.level * 150 + 50;
 			})
-			.attr("y1", function(d) {
-				return d[0].position * 150 + 50;
+			.attr("y1", function(d, i) {
+				return d.position * 150 + 50;
 			})
-			.attr("x2", function(d) {
-				return d[1].level * 150 + 50;
+			.attr("x2", function(d, i) {
+				return d.parentNode.level * 150 + 50;
 			})
-			.attr("y2", function(d) {
-				return d[1].position * 150 + 50;
+			.attr("y2", function(d, i) {
+				return d.parentNode.position * 150 + 50;
 			})
 
 		//append circles
