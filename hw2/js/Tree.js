@@ -92,16 +92,16 @@ class Tree {
 			.attr("width", 1200)
 			.attr("height", 1200);
 
-        //get array of children
+		//get array of children
 		let children = [];
 		for (let i = 1; i < this.nodes.length; i++) {
 			children.push(this.nodes[i]);
 		}
 
-        //append edges
+		//append edges
 		let edge = svg.selectAll("line")
 			.data(children)
-            .enter().append("line")
+			.enter().append("line")
 			.attr("x1", d => d.level * 200 + 50)
 			.attr("y1", d => d.position * 120 + 50)
 			.attr("x2", d => d.parentNode.level * 200 + 50)
@@ -110,7 +110,7 @@ class Tree {
 		//append circles
 		let circle = svg.selectAll("circle")
 			.data(this.nodes)
-		    .enter().append("circle")
+			.enter().append("circle")
 			.attr("cx", d => d.level * 200 + 50)
 			.attr("cy", d => d.position * 120 + 50)
 			.attr("r", 50);
@@ -118,10 +118,10 @@ class Tree {
 		//append texts
 		let text = svg.selectAll("text")
 			.data(this.nodes)
-		    .enter().append("text")
+			.enter().append("text")
 			.attr("x", d => d.level * 200 + 50)
 			.attr("y", d => d.position * 120 + 50)
 			.classed("label", true)
-            .text(d => d.name.toUpperCase());
+			.text(d => d.name.toUpperCase());
 	}
 }
