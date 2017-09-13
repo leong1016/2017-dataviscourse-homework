@@ -66,7 +66,7 @@ function update(error, data) {
     let rectsa = bargroupa.selectAll("rect")
                 .data(data);
     rectsa.exit().remove();
-    rectsa.enter().append("rect").merge(rectsa);
+    rectsa = rectsa.enter().append("rect").merge(rectsa);
     rectsa.attr("x", (d, i) => 10 * i);
     rectsa.attr("y", 0);
     rectsa.attr("width", 10);
@@ -80,7 +80,7 @@ function update(error, data) {
     let rectsb = bargroupb.selectAll("rect")
         .data(data);
     rectsb.exit().remove();
-    rectsb.enter().append("rect").merge(rectsb);
+    rectsb = rectsb.enter().append("rect").merge(rectsb);
     rectsb.attr("x", (d, i) => 10 * i);
     rectsb.attr("y", 0);
     rectsb.attr("width", 10);
@@ -132,22 +132,40 @@ function update(error, data) {
 
     // TODO: Select and update the scatterplot points
 
-    let scatterplot = d3.select("#scatterplot");
-    let circles = scatterplot.selectAll("circle")
+    let plotgroup = d3.select("#scatterplot");
+    let circles = plotgroup.selectAll("circle")
         .data(data);
-    console.log(circles);
     circles.exit().remove();
-    circles.enter().append("circle").merge(circles);
-    console.log(circles);
+    circles = circles.enter().append("circle").merge(circles);
     circles.attr("cx", function (d, i) {
         return aScale(d.a);
     });
     circles.attr("cy", function (d, i) {
         return bScale(d.b);
     });
+    circles.attr("r", 5);
 
     // ****** TODO: PART IV ******
 
+    let barcharts = document.getElementsByClassName("barChart");
+    for (let item of barcharts) {
+        item.addEventListener("mouseover", function (event) {
+            event.target.setAttribute("fill", "#EEEEEE")
+        });
+        item.addEventListener("mouseout", function (event) {
+            event.target.setAttribute("fill", "steelblue")
+        });
+    }
+
+    let scatterplot = document.getElementById("scatterplot");
+    let plots = scatterplot.getElementsByTagName("circle");
+    for (let item of plots) {
+        item.addEventListener("click", function () {
+            let x = item.__data__.a;
+            let y = item.__data__.b;
+            console.log(x+","+y);
+        })
+    }
 }
 
 /**
@@ -167,7 +185,6 @@ function changeData() {
  *   Load the file indicated by the select menu, and then slice out a random chunk before passing the data to update()
  */
 function randomSubset() {
-    alert("randomSubset");
     let dataFile = document.getElementById('dataset').value;
     if (document.getElementById('random').checked) {
         d3.csv('data/' + dataFile + '.csv', function (error, data) {
