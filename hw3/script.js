@@ -132,6 +132,20 @@ function update(error, data) {
 
     // TODO: Select and update the scatterplot points
 
+    let scatterplot = d3.select("#scatterplot");
+    let circles = scatterplot.selectAll("circle")
+        .data(data);
+    console.log(circles);
+    circles.exit().remove();
+    circles.enter().append("circle").merge(circles);
+    console.log(circles);
+    circles.attr("cx", function (d, i) {
+        return aScale(d.a);
+    });
+    circles.attr("cy", function (d, i) {
+        return bScale(d.b);
+    });
+
     // ****** TODO: PART IV ******
 
 }
