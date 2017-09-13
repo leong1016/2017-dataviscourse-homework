@@ -1,3 +1,8 @@
+document.getElementsByTagName("button")[0].addEventListener("click", staircase);
+document.getElementById("dataset").addEventListener("change", changeData);
+document.getElementById("random").addEventListener("change", randomSubset);
+
+
 /**
  * Makes the first bar chart appear as a staircase.
  *
@@ -5,6 +10,10 @@
  */
 function staircase() {
     // ****** TODO: PART II ******
+    let rects = document.getElementById("barchart1").getElementsByTagName("rect");
+    for (let i = 0; i < 11; i++) {
+        rects[i].setAttribute("height", (i + 4) * 10);
+    }
 }
 
 /**
@@ -31,11 +40,11 @@ function update(error, data) {
         // We need to explicitly convert values
         // to numbers so that comparisons work
         // when we call d3.max()
-
         for (let d of data) {
             d.a = +d.a;
             d.b = +d.b;
         }
+
     }
 
     // Set up the scales
@@ -49,28 +58,77 @@ function update(error, data) {
         .domain([0, data.length])
         .range([0, 110]);
 
-
     // ****** TODO: PART III (you will also edit in PART V) ******
 
     // TODO: Select and update the 'a' bar chart bars
 
+    let bargroupa = d3.select("#barchart1");
+    let rectsa = bargroupa.selectAll("rect")
+                .data(data);
+    rectsa.exit().remove();
+    rectsa.enter().append("rect").merge(rectsa);
+    rectsa.attr("x", (d, i) => 10 * i);
+    rectsa.attr("y", 0);
+    rectsa.attr("width", 10);
+    rectsa.attr("height", function (d, i) {
+        return aScale(d.a);
+    });
+
     // TODO: Select and update the 'b' bar chart bars
+
+    let bargroupb = d3.select("#barchart2");
+    let rectsb = bargroupb.selectAll("rect")
+        .data(data);
+    rectsb.exit().remove();
+    rectsb.enter().append("rect").merge(rectsb);
+    rectsb.attr("x", (d, i) => 10 * i);
+    rectsb.attr("y", 0);
+    rectsb.attr("width", 10);
+    rectsb.attr("height", function (d, i) {
+        return aScale(d.b);
+    });
 
     // TODO: Select and update the 'a' line chart path using this line generator
 
     let aLineGenerator = d3.line()
         .x((d, i) => iScale(i))
         .y((d) => aScale(d.a));
+    aLineGenerator = aLineGenerator(data);
+
+    d3.select("#linechart1").select("path")
+        .attr("d", aLineGenerator);
 
     // TODO: Select and update the 'b' line chart path (create your own generator)
 
+    let bLineGenerator = d3.line()
+        .x((d, i) => iScale(i))
+        .y((d) => aScale(d.b));
+    bLineGenerator = bLineGenerator(data);
+
+    d3.select("#linechart2").select("path")
+        .attr("d", bLineGenerator);
+
     // TODO: Select and update the 'a' area chart path using this area generator
+
     let aAreaGenerator = d3.area()
         .x((d, i) => iScale(i))
         .y0(0)
         .y1(d => aScale(d.a));
+    aAreaGenerator = aAreaGenerator(data);
+
+    d3.select("#areachart1").select("path")
+        .attr("d", aAreaGenerator);
 
     // TODO: Select and update the 'b' area chart path (create your own generator)
+
+    let bAreaGenerator = d3.area()
+        .x((d, i) => iScale(i))
+        .y0(0)
+        .y1(d => aScale(d.b));
+    bAreaGenerator = bAreaGenerator(data);
+
+    d3.select("#areachart2").select("path")
+        .attr("d", bAreaGenerator);
 
     // TODO: Select and update the scatterplot points
 
@@ -95,6 +153,7 @@ function changeData() {
  *   Load the file indicated by the select menu, and then slice out a random chunk before passing the data to update()
  */
 function randomSubset() {
+    alert("randomSubset");
     let dataFile = document.getElementById('dataset').value;
     if (document.getElementById('random').checked) {
         d3.csv('data/' + dataFile + '.csv', function (error, data) {

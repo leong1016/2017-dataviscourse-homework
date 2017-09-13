@@ -42,14 +42,16 @@
             padding: 1em;
         }
     </style>
+    <script src="d3.js" defer></script>
+    <script src="script.js" defer></script>
 </head>
 <body onload="changeData()">
 
 <h3>CS-5630 / CS-6630 Homework 3</h3>
 <address>
-    <span>Your Name</span>
-    <span>Your Email Address</span>
-    <span>Your uID</span>
+    <span>Your Name: Yulong Liang</span>
+    <span>Your Email Address: yulong.liang@utah.edu</span>
+    <span>Your uID: u1143816</span>
 </address>
 <br>
 <hr>
@@ -78,7 +80,7 @@
 <div>
     <h2>Bar Charts</h2>
     <svg width="200" height="200">
-        <g transform="translate(0, 200) scale(1, -1)" class="barChart" >
+        <g id="barchart1" transform="translate(0, 200) scale(1, -1)" class="barChart" >
             <rect x="10" y="0" width="10" height="100"></rect>
             <rect x="20" y="0" width="10" height="80"></rect>
             <rect x="30" y="0" width="10" height="130"></rect>
@@ -94,7 +96,7 @@
     </svg>
 
     <svg width="200" height="200">
-        <g transform="translate(0, 200) scale(1, -1)" class="barChart" >
+        <g id="barchart2" transform="translate(0, 200) scale(1, -1)" class="barChart" >
             <rect x="10" y="0" width="10" height="91"></rect>
             <rect x="20" y="0" width="10" height="81"></rect>
             <rect x="30" y="0" width="10" height="87"></rect>
@@ -114,14 +116,14 @@
     <h2>Line Charts</h2>
 
     <svg width="200" height="200">
-        <g transform="translate(10, 200) scale(1, -1)">
+        <g id="linechart1" transform="translate(10, 200) scale(1, -1)">
             <path class="lines"
                   d="M 0 100 L 10 80 L 20 130 L 30 90 L 40 110 L 50 140 L 60 60 L 70 40 L 80 120 L 90 70 L 100 50"></path>
         </g>
     </svg>
 
     <svg width="200" height="200">
-        <g class="lines" transform="translate(10, 200) scale(1, -1)">
+        <g id="linechart2" transform="translate(10, 200) scale(1, -1)">
             <path class="lines"
                   d="M 0 91 L 10 81 L 20 87 L 30 88 L 40 93 L 50 81 L 60 61 L 70 31 L 80 91 L 90 73 L 100 47"></path>
         </g>
@@ -132,14 +134,14 @@
     <h2>Area Charts</h2>
 
     <svg width="200" height="200">
-        <g transform="translate(10, 200) scale(1, -1)">
+        <g id="areachart1" transform="translate(10, 200) scale(1, -1)">
             <path  class="areas"
                   d="M 0 0 L 0 100 L 10 80 L 20 130 L 30 90 L 40 110 L 50 140 L 60 60 L 70 40 L 80 120 L 90 70 L 100 50  L 100 0"></path>
         </g>
     </svg>
 
     <svg width="200" height="200">
-        <g transform="translate(10, 200) scale(1, -1)">
+        <g id="areachart2" transform="translate(10, 200) scale(1, -1)">
             <path class="areas"
                   d="M 0 0 L 0 91 L 10 81 L 20 87 L 30 88 L 40 93 L 50 81 L 60 61 L 70 31 L 80 91 L 90 73 L 100 47 L 100 0"></path>
         </g>
@@ -166,5 +168,6 @@
         </g>
     </svg>
 </div>
+
 </body>
 </html>
