@@ -2,7 +2,6 @@ document.getElementsByTagName("button")[0].addEventListener("click", staircase);
 document.getElementById("dataset").addEventListener("change", changeData);
 document.getElementById("random").addEventListener("change", randomSubset);
 
-
 /**
  * Makes the first bar chart appear as a staircase.
  *
@@ -50,10 +49,10 @@ function update(error, data) {
     // Set up the scales
     let aScale = d3.scaleLinear()
         .domain([0, d3.max(data, d => d.a)])
-        .range([0, 150]);
+        .range([0, 140]);
     let bScale = d3.scaleLinear()
         .domain([0, d3.max(data, d => d.b)])
-        .range([0, 150]);
+        .range([0, 140]);
     let iScale = d3.scaleLinear()
         .domain([0, data.length])
         .range([0, 110]);
@@ -65,28 +64,50 @@ function update(error, data) {
     let bargroupa = d3.select("#barchart1");
     let rectsa = bargroupa.selectAll("rect")
                 .data(data);
-    rectsa.exit().remove();
-    rectsa = rectsa.enter().append("rect").merge(rectsa);
-    rectsa.attr("x", (d, i) => 10 * i);
-    rectsa.attr("y", 0);
-    rectsa.attr("width", 10);
-    rectsa.attr("height", function (d, i) {
-        return aScale(d.a);
-    });
+    rectsa.exit()
+        .transition()
+        .duration(1000)
+        .attr("height", 0)
+        .remove();
+    rectsa = rectsa.enter().append("rect")
+        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("y", 0)
+        .attr("width", 10)
+        .attr("height", 0)
+        .merge(rectsa);
+    rectsa.transition()
+        .duration(1000)
+        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("y", 0)
+        .attr("width", 10)
+        .attr("height", function (d, i) {
+            return aScale(d.a);
+        });
 
     // TODO: Select and update the 'b' bar chart bars
 
     let bargroupb = d3.select("#barchart2");
     let rectsb = bargroupb.selectAll("rect")
         .data(data);
-    rectsb.exit().remove();
-    rectsb = rectsb.enter().append("rect").merge(rectsb);
-    rectsb.attr("x", (d, i) => 10 * i);
-    rectsb.attr("y", 0);
-    rectsb.attr("width", 10);
-    rectsb.attr("height", function (d, i) {
-        return aScale(d.b);
-    });
+    rectsb.exit()
+        .transition()
+        .duration(1000)
+        .attr("height", 0)
+        .remove();
+    rectsb = rectsb.enter().append("rect")
+        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("y", 0)
+        .attr("width", 10)
+        .attr("height", 0)
+        .merge(rectsb);
+    rectsb.transition()
+        .duration(1000)
+        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("y", 0)
+        .attr("width", 10)
+        .attr("height", function (d, i) {
+            return aScale(d.b);
+        });
 
     // TODO: Select and update the 'a' line chart path using this line generator
 
@@ -96,6 +117,8 @@ function update(error, data) {
     aLineGenerator = aLineGenerator(data);
 
     d3.select("#linechart1").select("path")
+        .transition()
+        .duration(1000)
         .attr("d", aLineGenerator);
 
     // TODO: Select and update the 'b' line chart path (create your own generator)
@@ -106,6 +129,8 @@ function update(error, data) {
     bLineGenerator = bLineGenerator(data);
 
     d3.select("#linechart2").select("path")
+        .transition()
+        .duration(1000)
         .attr("d", bLineGenerator);
 
     // TODO: Select and update the 'a' area chart path using this area generator
@@ -117,6 +142,8 @@ function update(error, data) {
     aAreaGenerator = aAreaGenerator(data);
 
     d3.select("#areachart1").select("path")
+        .transition()
+        .duration(1000)
         .attr("d", aAreaGenerator);
 
     // TODO: Select and update the 'b' area chart path (create your own generator)
@@ -128,6 +155,8 @@ function update(error, data) {
     bAreaGenerator = bAreaGenerator(data);
 
     d3.select("#areachart2").select("path")
+        .transition()
+        .duration(1000)
         .attr("d", bAreaGenerator);
 
     // TODO: Select and update the scatterplot points
@@ -135,15 +164,32 @@ function update(error, data) {
     let plotgroup = d3.select("#scatterplot");
     let circles = plotgroup.selectAll("circle")
         .data(data);
-    circles.exit().remove();
-    circles = circles.enter().append("circle").merge(circles);
-    circles.attr("cx", function (d, i) {
-        return aScale(d.a);
-    });
-    circles.attr("cy", function (d, i) {
-        return bScale(d.b);
-    });
-    circles.attr("r", 5);
+    circles.exit()
+        .style("opacity", 1)
+        .transition()
+        .duration(1000)
+        .style("opacity", 0)
+        .remove();
+    let newcircles = circles.enter().append("circle")
+        .attr("cx", function (d, i) {
+            return aScale(d.a);
+        })
+        .attr("cy", function (d, i) {
+            return bScale(d.b);
+        })
+        .attr("r", 5)
+        .style("opacity", 0);
+    circles = newcircles.merge(circles);
+    circles.transition()
+        .duration(1000)
+        .attr("cx", function (d, i) {
+            return aScale(d.a);
+        })
+        .attr("cy", function (d, i) {
+            return bScale(d.b);
+        })
+        .attr("r", 5)
+        .style("opacity", 1)
 
     // ****** TODO: PART IV ******
 
@@ -166,6 +212,21 @@ function update(error, data) {
             console.log(x+","+y);
         })
     }
+
+    let div = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("opacity", 0);
+
+    d3.select("#scatterplot").selectAll("circle")
+        .on("mouseover", function (d, i) {
+            div.html("("+d.a+", "+d.b+")")
+                .style("left", d3.event.pageX+"px")
+                .style("top", d3.event.pageY+"px")
+                .style("opacity", 1)
+        })
+        .on("mouseout", function () {
+            div.style("opacity", 0);
+        })
 }
 
 /**
