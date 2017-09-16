@@ -9,9 +9,16 @@ document.getElementById("random").addEventListener("change", randomSubset);
  */
 function staircase() {
     // ****** TODO: PART II ******
-    let rects = document.getElementById("barchart1").getElementsByTagName("rect");
-    for (let i = 0; i < 11; i++) {
-        rects[i].setAttribute("height", (i + 4) * 10);
+    let rects = document.getElementById("barchart1").children;
+    let heights = [];
+    for (let i = 0; i < rects.length; i++) {
+        heights.push(rects[i].getAttribute("height"));
+    }
+    heights.sort(function (a, b) {
+        return a - b;
+    })
+    for (let i = 0; i < rects.length; i++) {
+        rects[i].setAttribute("height", heights[i]);
     }
 }
 
@@ -70,14 +77,18 @@ function update(error, data) {
         .attr("height", 0)
         .remove();
     rectsa = rectsa.enter().append("rect")
-        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("x", function (d, i) {
+            return iScale(i) + 10;  //html starts from 10
+        })
         .attr("y", 0)
         .attr("width", 10)
         .attr("height", 0)
         .merge(rectsa);
     rectsa.transition()
         .duration(1000)
-        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("x", function (d, i) {
+            return iScale(i) + 10;  //html starts from 10
+        })
         .attr("y", 0)
         .attr("width", 10)
         .attr("height", function (d, i) {
@@ -95,14 +106,18 @@ function update(error, data) {
         .attr("height", 0)
         .remove();
     rectsb = rectsb.enter().append("rect")
-        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("x", function (d, i) {
+            return iScale(i) + 10;  //html starts from 10
+        })
         .attr("y", 0)
         .attr("width", 10)
         .attr("height", 0)
         .merge(rectsb);
     rectsb.transition()
         .duration(1000)
-        .attr("x", (d, i) => 10 * (i + 1))
+        .attr("x", function (d, i) {
+            return iScale(i) + 10;  //html starts from 10
+        })
         .attr("y", 0)
         .attr("width", 10)
         .attr("height", function (d, i) {
