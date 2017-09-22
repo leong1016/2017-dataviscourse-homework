@@ -5,7 +5,9 @@ class Map {
      */
     constructor() {
         this.projection = d3.geoConicConformal().scale(150).translate([400, 350]);
-
+        this.path = d3.geoPath()
+            .projection(this.projection);
+        this.graticule = d3.geoGraticule();
     }
 
     /**
@@ -57,6 +59,8 @@ class Map {
      */
     drawMap(world) {
 
+        let newworld = topojson.feature(world, world.objects.countries);
+
         //(note that projection is a class member
         // updateMap() will need it to add the winner/runner_up markers.)
 
@@ -71,6 +75,23 @@ class Map {
         // Make sure and give your paths the appropriate class (see the .css selectors at
         // the top of the provided html file)
 
+
+        let mapPath = d3.select("#map").selectAll("path")
+            .data(newworld.features)
+            .enter()
+            .append("path")
+            .attr("class", "countries")
+            .attr("id", function (d, i) {
+                return d.id;
+            })
+            .attr("d", this.path);
+        console.log(mapPath);
+
+        let graticulePath = d3.select("#map").append("path")
+            .datum(this.graticule)
+            .attr("class", "grat")
+            .attr("d", this.path)
+            .attr("fill", "none");
     }
 
 
