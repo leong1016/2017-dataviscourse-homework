@@ -85,7 +85,8 @@ class BarChart {
             })
             .attr("fill", function (d, i) {
                 return colorScale(d[selectedDimension]);
-            });
+            })
+            .attr("style", "cursor: pointer");
 
         // ******* TODO: PART II *******
 
@@ -97,8 +98,9 @@ class BarChart {
             .on("click", function () {
                 rects.attr("class", null);
                 d3.select(this).attr("class", "selected");
-                let oneWorldCup = d3.select(this).property("__data__");
-                infoPanel.updateInfo(oneWorldCup);
+                let data = d3.select(this).property("__data__");
+                window.infoPanel.updateInfo(data);
+                window.worldMap.updateMap(data);
             })
 
         // Call the necessary update functions for when a user clicks on a bar.

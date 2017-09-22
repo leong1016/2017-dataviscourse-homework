@@ -23,6 +23,10 @@ class Map {
         // the colors and markers for hosts/teams/winners, you can use
         // d3 selection and .classed to set these classes on and off here.
 
+        d3.select("#points").selectAll(".gold, .silver").remove();
+
+        d3.select("#map").selectAll(".team, .host")
+            .attr("class", "countries");
     }
 
     /**
@@ -42,13 +46,39 @@ class Map {
         // as well as a .silver. These have styling attributes for the two
         // markers.
 
+        let gold = d3.select("#points").append("circle")
+            .attr("cx", function () {
+                return worldMap.projection(worldcupData.win_pos)[0];
+            })
+            .attr("cy", function () {
+                return worldMap.projection(worldcupData.win_pos)[1];
+            })
+            .attr("r", 8)
+            .attr("class", "gold");
 
-        // Select the host country and change it's color accordingly.
+        let silver = d3.select("#points").append("circle")
+            .attr("cx", function () {
+                return worldMap.projection(worldcupData.ru_pos)[0];
+            })
+            .attr("cy", function () {
+                return worldMap.projection(worldcupData.ru_pos)[1];
+            })
+            .attr("r", 8)
+            .attr("class", "silver");
 
         // Iterate through all participating teams and change their color as well.
 
         // We strongly suggest using CSS classes to style the selected countries.
 
+        for (let item of worldcupData.teams_iso) {
+            let country = d3.select("#"+item)
+                .attr("class", "team")
+        }
+
+        // Select the host country and change it's color accordingly.
+
+        let host = d3.select("#"+worldcupData.host_country_code)
+            .attr("class", "host");
 
         // Add a marker for gold/silver medalists
     }
@@ -85,7 +115,6 @@ class Map {
                 return d.id;
             })
             .attr("d", this.path);
-        console.log(mapPath);
 
         let graticulePath = d3.select("#map").append("path")
             .datum(this.graticule)
