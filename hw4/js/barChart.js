@@ -105,6 +105,14 @@ class BarChart {
         // Make sure only the selected bar has this new color.
 
         rects
+            .on("mouseover", function () {
+                d3.select(this).attr("fill", "lightsteelblue")
+            })
+            .on("mouseout", function () {
+                d3.select(this).attr("fill", function (d, i) {
+                    return colorScale(d[selectedDimension]);
+                })
+            })
             .on("click", function () {
                 rects.attr("class", null);
                 d3.select(this).attr("class", "selected");
