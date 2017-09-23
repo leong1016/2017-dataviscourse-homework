@@ -6,7 +6,6 @@
     <title>Visualization - Homework 4</title>
     <link rel="stylesheet" href="styles.css"/>
     <script src="https://d3js.org/d3.v4.js"></script>
-    <!--<script src="js/d3.js"></script>-->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/topojson/1.6.19/topojson.min.js"></script>
     <script src="js/infoPanel.js" async></script>
     <script src="js/barChart.js" async></script>
@@ -55,7 +54,6 @@
 
     <div id="map-view" class="view">
         <h2>World Map</h2>
-
         <svg width="400" height="30">
             <rect class="host legend-element" x="0" y="5" ></rect>
             <text x="18" y="18">Host</text>
@@ -66,7 +64,9 @@
             <circle class="silver" cx="258" cy="12" r="8" ></circle>
             <text x="270" y="18">Runner-Up</text>
         </svg>
-
+        <svg width="900" height="15">
+            <text id="extra"></text>
+        </svg>
         <svg width="900" height="600">
             <g id="map"></g>
             <g id="points"></g>

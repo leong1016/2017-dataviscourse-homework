@@ -3,7 +3,8 @@ class Map {
     /**
      * Creates a Map Object
      */
-    constructor() {
+    constructor(allData) {
+        this.allData = allData;
         this.projection = d3.geoConicConformal().scale(150).translate([400, 350]);
         this.path = d3.geoPath()
             .projection(this.projection);
@@ -35,6 +36,7 @@ class Map {
      */
     updateMap(worldcupData) {
 
+        let projection = this.projection;
         //Clear any previous selections;
         this.clearMap();
 
@@ -48,20 +50,20 @@ class Map {
 
         let gold = d3.select("#points").append("circle")
             .attr("cx", function () {
-                return worldMap.projection(worldcupData.win_pos)[0];
+                return projection(worldcupData.win_pos)[0];
             })
             .attr("cy", function () {
-                return worldMap.projection(worldcupData.win_pos)[1];
+                return projection(worldcupData.win_pos)[1];
             })
             .attr("r", 8)
             .attr("class", "gold");
 
         let silver = d3.select("#points").append("circle")
             .attr("cx", function () {
-                return worldMap.projection(worldcupData.ru_pos)[0];
+                return projection(worldcupData.ru_pos)[0];
             })
             .attr("cy", function () {
-                return worldMap.projection(worldcupData.ru_pos)[1];
+                return projection(worldcupData.ru_pos)[1];
             })
             .attr("r", 8)
             .attr("class", "silver");
@@ -90,6 +92,7 @@ class Map {
     drawMap(world) {
 
         let newworld = topojson.feature(world, world.objects.countries);
+        let allData = this.allData;
 
         //(note that projection is a class member
         // updateMap() will need it to add the winner/runner_up markers.)
@@ -105,8 +108,8 @@ class Map {
         // Make sure and give your paths the appropriate class (see the .css selectors at
         // the top of the provided html file)
 
-
-        let mapPath = d3.select("#map").selectAll("path")
+        let map = d3.select("#map");
+        let mapPath = map.selectAll("path")
             .data(newworld.features)
             .enter()
             .append("path")
@@ -114,7 +117,29 @@ class Map {
             .attr("id", function (d, i) {
                 return d.id;
             })
-            .attr("d", this.path);
+            .attr("d", this.path)
+            .on("click", function (event) {
+                let curr = event.id;
+                let count = 0;
+                let list = [];
+                for (let i = allData.length - 1; i >= 0; i--) {
+                    for (let item of allData[i].teams_iso) {
+                        if (item == curr) {
+                            count++
+                            list.push(allData[i].year)
+                            break;
+                        }
+                    }
+                }
+                let panel = d3.select("#extra")
+                    .attr("y", "12")
+                    .style("font-size", "11px")
+                if (count == 0) {
+                    panel.text(curr+" has never participated in World Cup.")
+                } else {
+                    panel.text(curr+" has participated in World Cup for "+count+" times : "+list)
+                }
+            })
 
         let graticulePath = d3.select("#map").append("path")
             .datum(this.graticule)
@@ -122,6 +147,5 @@ class Map {
             .attr("d", this.path)
             .attr("fill", "none");
     }
-
 
 }

@@ -18,6 +18,8 @@ class BarChart {
      */
     updateBarChart(selectedDimension) {
 
+        let infoPanel = this.infoPanel;
+        let worldMap = this.worldMap;
 
         // ******* TODO: PART I *******
 
@@ -67,26 +69,34 @@ class BarChart {
             .scale(yScale);
         let yAxisContainer = d3.select("#yAxis")
             .attr("transform", "translate("+(offset)+", "+(-offset)+")")
+            .transition()
+            .duration(2000)
             .call(yAxis);
 
         // Create the bars (hint: use #bars)
         let rects = d3.select("#bars").selectAll("rect")
             .data(this.allData);
-        rects = rects.enter().append("rect").merge(rects);
-        rects
+        rects = rects.enter().append("rect")
             .attr("transform", "translate("+(1)+", "+(heightBarChart - offset)+") scale(1, -1)")
             .attr("x", function (d, i) {
                 return xScale(d.year);
             })
             .attr("y", 0)
             .attr("width", (widthBarChart - offset) / years.length - 2)
+            .attr("height", 0)
+            .attr("fill", function (d, i) {
+                return colorScale(d[selectedDimension]);
+            })
+            .attr("style", "cursor: pointer")
+            .merge(rects);
+        rects.transition()
+            .duration(2000)
             .attr("height", function (d, i) {
                 return heightBarChart - yScale(d[selectedDimension]);
             })
             .attr("fill", function (d, i) {
                 return colorScale(d[selectedDimension]);
-            })
-            .attr("style", "cursor: pointer");
+            });
 
         // ******* TODO: PART II *******
 
@@ -99,8 +109,8 @@ class BarChart {
                 rects.attr("class", null);
                 d3.select(this).attr("class", "selected");
                 let data = d3.select(this).property("__data__");
-                window.infoPanel.updateInfo(data);
-                window.worldMap.updateMap(data);
+                infoPanel.updateInfo(data);
+                worldMap.updateMap(data);
             })
 
         // Call the necessary update functions for when a user clicks on a bar.
@@ -119,39 +129,7 @@ class BarChart {
         //Changed the selected data when a user selects a different
         // menu item from the drop down.
 
-        let offset = 60;
-        let heightBarChart = d3.select("#barChart").attr("height");
-        let minValue = d3.min(this.allData, function (d) {
-            return d[selectedDimension];
-        })
-        let maxValue = d3.max(this.allData, function (d) {
-            return d[selectedDimension];
-        });
-        let yScale = d3.scaleLinear()
-            .domain([0, maxValue])
-            .range([heightBarChart, offset]);
-        let colorScale = d3.scaleSequential(function (t) {
-            return d3.hsl(215, 0.5, t / 4 + 0.2);
-        })
-            .domain([maxValue, minValue]);
-
-        let yAxis = d3.axisLeft()
-            .scale(yScale);
-        let yAxisContainer = d3.select("#yAxis")
-            .transition()
-            .duration(2000)
-            .call(yAxis);
-
-        let rects = d3.select("#bars").selectAll("rect")
-            .data(this.allData)
-            .transition()
-            .duration(2000)
-            .attr("height", function (d, i) {
-                return heightBarChart - yScale(d[selectedDimension]);
-            })
-            .attr("fill", function (d, i) {
-                return colorScale(d[selectedDimension]);
-            });
+        this.updateBarChart(selectedDimension);
 
     }
 }
