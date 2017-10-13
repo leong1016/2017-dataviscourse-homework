@@ -152,4 +152,6 @@ header {
     float: left;
 }
 
-
+.axis {
+    font-size: 10px;
+}
