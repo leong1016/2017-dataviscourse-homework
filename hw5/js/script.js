@@ -21,8 +21,6 @@
 //         //Create Table Object and pass in reference to tree object (for hover linking)
 //         let table = new Table(data,tree);
 //
-//         console.log(data)
-//
 //         table.createTable();
 //         table.updateTable();
 //     });
@@ -99,8 +97,6 @@ d3.csv("data/fifa-matches.csv", function (error, matchesCSV) {
                 }
             })
             .entries(matchesCSV)
-
-        console.log(teamData)
 
         //Create a unique "id" field for each game
         treeCSV.forEach(function (d, i) {

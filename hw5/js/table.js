@@ -63,11 +63,22 @@ class Table {
 
         // ******* TODO: PART II *******
 
+        let maxGoalsMade = d3.max(this.tableElements, function (d) {
+            return d.value["Goals Made"];
+        })
+        let maxGoalsConceded = d3.max(this.tableElements, function (d) {
+            return d.value["Goals Conceded"];
+        })
+        let maxGoals = d3.max([maxGoalsConceded, maxGoalsMade]);
+        let maxTotalGames = d3.max(this.tableElements, function (d) {
+            return d.value.TotalGames;
+        })
+
         //Update Scale Domains
-        this.goalScale.domain([0,18]);                //replace
-        this.gameScale.domain([0,7]);                 //replace
-        this.aggregateColorScale.domain([0,7]);       //replace
-        this.goalColorScale.domain([0]);              //replace
+        this.goalScale.domain([0,maxGoals]);
+        this.gameScale.domain([0,maxTotalGames]);
+        this.aggregateColorScale.domain([0,maxTotalGames]);
+        this.goalColorScale.domain([0]);
 
         // Create the x axes for the goalScale.
         let axis = d3.axisTop()
@@ -267,7 +278,7 @@ class Table {
             })
 
         let goalssvg = tdgoals.selectAll("svg")
-            .data(function (d) {
+            .data(function (d) {                                            //replace
                 return [d];
             })
         goalssvg.exit().remove();
@@ -276,7 +287,7 @@ class Table {
             .attr("height", this.cell.height)
 
         let goals = goalssvg.selectAll("g")
-            .data(function (d) {
+            .data(function (d) {                                            //replace
                 return [d];
             })
         goals.exit().remove();
@@ -284,7 +295,7 @@ class Table {
             .attr("transform", "translate(10, 0)")
 
         let goalsrect = goals.selectAll("rect")
-            .data(function (d) {
+            .data(function (d) {                                            //replace
                 return [d];
             })
         goalsrect.exit().remove();
