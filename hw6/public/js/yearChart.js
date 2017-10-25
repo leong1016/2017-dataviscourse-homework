@@ -70,22 +70,79 @@ class YearChart {
 
        // ******* TODO: PART I *******
 
+        let electoralVoteChart = this.electoralVoteChart;
+        let tileChart = this.tileChart;
+        let votePercentageChart = this.votePercentageChart;
+        let colorScale = this.colorScale;
+        let chooseClass = this.chooseClass;
+
+        let xScale = d3.scaleLinear()
+            .domain([1940, 2012])
+            .range([0 + 50, this.svgWidth - 50])
+
+    //Style the chart by adding a dashed line that connects all these years.
+    //HINT: Use .lineChart to style this dashed line
+        let line = this.svg.append("g").append("line")
+            .attr("x1", 0)
+            .attr("x2", this.svgWidth)
+            .attr("y1", this.svgHeight / 2)
+            .attr("y2", this.svgHeight / 2)
+            .attr("class", "lineChart")
+
     // Create the chart by adding circle elements representing each election year
     //The circles should be colored based on the winning party for that year
     //HINT: Use the .yearChart class to style your circle elements
     //HINT: Use the chooseClass method to choose the color corresponding to the winning party.
+        let circles = this.svg.append("g");
+        let circle = circles.selectAll("circle")
+            .data(this.electionWinners);
+        circle.enter().append("circle")
+            .attr("cx", function (d) {
+                return xScale(d.YEAR);
+            })
+            .attr("cy", this.svgHeight / 2)
+            .attr("r", this.svgHeight / 6)
+            .attr("class", function (d) {
+                return chooseClass(d.PARTY);
+            })
+            .on("mouseover", function () {
+                this.classList.add("highlighted");
+            })
+            .on("mouseout", function () {
+                this.classList.remove("highlighted");
+            });
 
     //Append text information of each year right below the corresponding circle
     //HINT: Use .yeartext class to style your text elements
-
-    //Style the chart by adding a dashed line that connects all these years.
-    //HINT: Use .lineChart to style this dashed line
+        let texts = this.svg.append("g")
+        let text = texts.selectAll("text")
+            .data(this.electionWinners);
+        text.enter().append("text")
+            .attr("x", function (d) {
+                return xScale(d.YEAR)
+            })
+            .attr("y", this.svgHeight / 1)
+            .attr("class", "yeartext")
+            .text(function (d) {
+                return d.YEAR;
+            });
 
     //Clicking on any specific year should highlight that circle and  update the rest of the visualizations
     //HINT: Use .highlighted class to style the highlighted circle
 
     //Election information corresponding to that year should be loaded and passed to
     // the update methods of other visualizations
+        this.svg.selectAll("circle")
+            .on("click", function (d) {
+                circles.selectAll("circle").attr("class", d => chooseClass(d.PARTY));
+                this.classList.add("selected");
+
+                d3.csv("data/Year_Timeline_"+d.YEAR+".csv", function (error, electionResult) {
+                    electoralVoteChart.update(electionResult, colorScale);
+                    votePercentageChart.update(electionResult);
+                    tileChart.update(electionResult, colorScale);
+                })
+            })
 
 
     //******* TODO: EXTRA CREDIT *******
