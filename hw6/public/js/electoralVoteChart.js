@@ -48,16 +48,72 @@ class ElectoralVoteChart {
      * @param colorScale global quantile scale based on the winning margin between republicans and democrats
      */
 
-   update (electionResult, colorScale){
+    update (electionResult, colorScale){
 
-          // ******* TODO: PART II *******
+    // ******* TODO: PART II *******
+
+        let xScale = d3.scaleLinear()
+            .domain([0, 538])
+            .range([0, this.svgWidth]);
 
     //Group the states based on the winning party for the state;
     //then sort them based on the margin of victory
+        let totalVotes = 0;
+        let i = [];
+        let p = []
 
+        for (let item of electionResult) {
+            totalVotes += parseInt(item.Total_EV);
+            if (item.RD_Difference == 0) {
+                i.push(item);
+            } else {
+                p.push(item);
+            }
+        }
+
+        p.sort(function (a, b) {
+            return b.RD_Difference - a.RD_Difference;
+        })
+
+        console.log(totalVotes);
     //Create the stacked bar chart.
     //Use the global color scale to color code the rectangles.
     //HINT: Use .electoralVotes class to style your bars.
+
+        let groupp = this.svg.append("g")
+        let rectp = groupp.selectAll("rect")
+            .data(p);
+        rectp.exit().remove();
+        rectp = rectp.enter().append("rect").merge(rectp)
+            .attr("width", function (d) {
+                return xScale(d.Total_EV);
+            })
+            .attr('height', this.svgHeight / 6)
+            .attr("x", function (d) {
+                totalVotes -= d.Total_EV;
+                return xScale(totalVotes);
+            })
+            .attr("y", this.svgHeight / 2)
+            .attr("class", "electoralVotes")
+            .attr("fill", function (d) {
+                return colorScale(d.RD_Difference)
+            })
+
+        let groupi = this.svg.append("g")
+        let recti = groupi.selectAll("rect")
+            .data(i);
+        recti.exit().remove();
+        recti = recti.enter().append("rect").merge(recti)
+            .attr("width", function (d) {
+                return xScale(d.Total_EV);
+            })
+            .attr("height", this.svgHeight / 6)
+            .attr("x", function (d) {
+                totalVotes -= d.Total_EV;
+                return xScale(totalVotes);
+            })
+            .attr("y", this.svgHeight / 2)
+            .attr("class", "electoralVotes independent")
 
     //Display total count of electoral votes won by the Democrat and Republican party
     //on top of the corresponding groups of bars.
@@ -66,6 +122,8 @@ class ElectoralVoteChart {
 
     //Display a bar with minimal width in the center of the bar chart to indicate the 50% mark
     //HINT: Use .middlePoint class to style this bar.
+        let groupb = this.svg.append("g");
+        let bar = groupb.select("")
 
     //Just above this, display the text mentioning the total number of electoral votes required
     // to win the elections throughout the country
