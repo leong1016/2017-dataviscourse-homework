@@ -52,11 +52,6 @@ class ElectoralVoteChart {
 
     // ******* TODO: PART II *******
 
-        let chooseClass = this.chooseClass;
-        let xScale = d3.scaleLinear()
-            .domain([0, 538])
-            .range([0, this.svgWidth]);
-
     //Group the states based on the winning party for the state;
     //then sort them based on the margin of victory
         let totalI = 0;
@@ -87,6 +82,11 @@ class ElectoralVoteChart {
     //Use the global color scale to color code the rectangles.
     //HINT: Use .electoralVotes class to style your bars.
 
+        let chooseClass = this.chooseClass;
+        let xScale = d3.scaleLinear()
+            .domain([0, totalVotes])
+            .range([0, this.svgWidth]);
+
         this.svg.selectAll("g").remove();
 
         let groupp = this.svg.append("g")
@@ -94,11 +94,11 @@ class ElectoralVoteChart {
             .data(p);
         rectp = rectp.enter().append("rect").merge(rectp)
             .attr("width", function (d) {
-                return xScale(d.Total_EV);
+                return xScale(parseInt(d.Total_EV));
             })
             .attr('height', this.svgHeight / 5)
             .attr("x", function (d) {
-                totalVotes -= d.Total_EV;
+                totalVotes -= parseInt(d.Total_EV);
                 return xScale(totalVotes);
             })
             .attr("y", this.svgHeight / 2)
@@ -112,11 +112,11 @@ class ElectoralVoteChart {
             .data(i);
         recti = recti.enter().append("rect").merge(recti)
             .attr("width", function (d) {
-                return xScale(d.Total_EV);
+                return xScale(parseInt(d.Total_EV));
             })
             .attr("height", this.svgHeight / 5)
             .attr("x", function (d) {
-                totalVotes -= d.Total_EV;
+                totalVotes -= parseInt(d.Total_EV);
                 return xScale(totalVotes);
             })
             .attr("y", this.svgHeight / 2)
