@@ -88,14 +88,11 @@ class VotePercentageChart {
                 }
                 // pass this as an argument to the tooltip_render function then,
                 // return the HTML content returned from that method.
-                console.log(tooltip_data)
                 return this.tooltip_render(tooltip_data);
             });
 
 
         // ******* TODO: PART III *******
-
-        console.log(electionResult)
 
         let rp = parseFloat(electionResult[0].R_PopularPercentage);
         let dp = parseFloat(electionResult[0].D_PopularPercentage);
