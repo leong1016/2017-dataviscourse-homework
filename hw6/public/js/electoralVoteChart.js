@@ -52,8 +52,6 @@ class ElectoralVoteChart {
 
     // ******* TODO: PART II *******
 
-        console.log(electionResult)
-
         let chooseClass = this.chooseClass;
         let xScale = d3.scaleLinear()
             .domain([0, 538])
