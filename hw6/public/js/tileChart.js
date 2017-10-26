@@ -5,7 +5,7 @@ class TileChart {
      * Initializes the svg elements required to lay the tiles
      * and to populate the legend.
      */
-     onstructor(){
+     constructor(){
 
         let divTiles = d3.select("#tiles").classed("content", true);
         this.margin = {top: 30, right: 20, bottom: 30, left: 50};
