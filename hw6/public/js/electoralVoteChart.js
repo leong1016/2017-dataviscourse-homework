@@ -52,43 +52,53 @@ class ElectoralVoteChart {
 
     // ******* TODO: PART II *******
 
+        console.log(electionResult)
+
+        let chooseClass = this.chooseClass;
         let xScale = d3.scaleLinear()
             .domain([0, 538])
             .range([0, this.svgWidth]);
 
     //Group the states based on the winning party for the state;
     //then sort them based on the margin of victory
-        let totalVotes = 0;
+        let totalI = 0;
+        let totalR = 0;
+        let totalD = 0;
         let i = [];
-        let p = []
+        let p = [];
 
         for (let item of electionResult) {
-            totalVotes += parseInt(item.Total_EV);
             if (item.RD_Difference == 0) {
                 i.push(item);
+                totalI += parseInt(item.Total_EV);
             } else {
                 p.push(item);
+                if (item.RD_Difference > 0)
+                    totalR += parseInt(item.Total_EV);
+                else
+                    totalD += parseInt(item.Total_EV);
             }
         }
 
         p.sort(function (a, b) {
             return b.RD_Difference - a.RD_Difference;
         })
+        let totalVotes = totalI + totalR + totalD;
 
-        console.log(totalVotes);
     //Create the stacked bar chart.
     //Use the global color scale to color code the rectangles.
     //HINT: Use .electoralVotes class to style your bars.
 
+        this.svg.selectAll("g").remove();
+
         let groupp = this.svg.append("g")
         let rectp = groupp.selectAll("rect")
             .data(p);
-        rectp.exit().remove();
         rectp = rectp.enter().append("rect").merge(rectp)
             .attr("width", function (d) {
                 return xScale(d.Total_EV);
             })
-            .attr('height', this.svgHeight / 6)
+            .attr('height', this.svgHeight / 5)
             .attr("x", function (d) {
                 totalVotes -= d.Total_EV;
                 return xScale(totalVotes);
@@ -102,12 +112,11 @@ class ElectoralVoteChart {
         let groupi = this.svg.append("g")
         let recti = groupi.selectAll("rect")
             .data(i);
-        recti.exit().remove();
         recti = recti.enter().append("rect").merge(recti)
             .attr("width", function (d) {
                 return xScale(d.Total_EV);
             })
-            .attr("height", this.svgHeight / 6)
+            .attr("height", this.svgHeight / 5)
             .attr("x", function (d) {
                 totalVotes -= d.Total_EV;
                 return xScale(totalVotes);
@@ -120,14 +129,61 @@ class ElectoralVoteChart {
     //HINT: Use the .electoralVoteText class to style your text elements;  Use this in combination with
     // chooseClass to get a color based on the party wherever necessary
 
+        let groupv = this.svg.append("g");
+        let votes = groupv.selectAll("text")
+            .data([totalI, totalR, totalD])
+        votes = votes.enter().append("text").merge(votes)
+            .text(function (d) {
+                if (d == 0)
+                    return null;
+                return d;
+            })
+            .attr("x", function (d, i) {
+                switch (i) {
+                    case 0:
+                        return 0;
+                    case 1:
+                        return xScale(totalI + totalR + totalD);
+                    case 2:
+                        return xScale(totalI);
+                }
+            })
+            .attr("y", this.svgHeight / 2 - 5)
+            .attr("class", function (d, i) {
+                let result = "electoralVoteText ";
+                switch (i) {
+                    case 0:
+                        result += chooseClass("I");
+                        break;
+                    case 1:
+                        result += chooseClass("R");
+                        break;
+                    case 2:
+                        result += chooseClass("D");
+                        break;
+                }
+                return result;
+            })
+
     //Display a bar with minimal width in the center of the bar chart to indicate the 50% mark
     //HINT: Use .middlePoint class to style this bar.
-        let groupb = this.svg.append("g");
-        let bar = groupb.select("")
+
+        let bar = this.svg.append("g").append("rect")
+            .attr("x", this.svgWidth / 2 - 1.5)
+            .attr("y", this.svgHeight / 2 - 3)
+            .attr("width", 3)
+            .attr("height", this.svgHeight / 5 + 6)
+            .attr("class", "middlePoint")
 
     //Just above this, display the text mentioning the total number of electoral votes required
     // to win the elections throughout the country
     //HINT: Use .electoralVotesNote class to style this text element
+
+        let note = this.svg.append("g").append("text")
+            .text("Electoral Vote ("+parseInt((totalI+totalR+totalD)/2+1)+" needed to win)")
+            .attr("x", this.svgWidth / 2)
+            .attr("y", this.svgHeight / 2 - 10)
+            .attr("class", "electoralVotesNote")
 
     //HINT: Use the chooseClass method to style your elements based on party wherever necessary.
 
