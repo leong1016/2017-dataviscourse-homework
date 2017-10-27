@@ -14,9 +14,18 @@ class ShiftChart {
      * @param selectedStates data corresponding to the states selected on brush
      */
     update(selectedStates){
-     
+
+        console.log(selectedStates)
+
      // ******* TODO: PART V *******
     //Display the names of selected states in a list
+        let ul = d3.select("#stateList").append("ul");
+        let li = ul.selectAll("li")
+            .data(selectedStates)
+        li.exit().remove()
+        li = li.enter().append("li").merge(li)
+            .text(d => d.State)
+
 
     //******** TODO: PART VI*******
     //Use the shift data corresponding to the selected years and sketch a visualization

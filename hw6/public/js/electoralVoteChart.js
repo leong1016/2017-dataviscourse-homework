@@ -191,7 +191,27 @@ class ElectoralVoteChart {
     //Call the update method of shiftChart and pass the data corresponding to brush selection.
     //HINT: Use the .brush class to style the brush.
 
+        let shiftChart = this.shiftChart;
 
+        let brush = d3.brushX()
+            .extent([[0, this.svgHeight / 2 - 7],[this.svgWidth, this.svgHeight / 2 + this.svgHeight / 5 + 7]])
+            .on("end", d => {
+                let result = [];
+                if (d3.event.selection != null) {
+                    let brushstart = d3.event.selection[0];
+                    let brushend = d3.event.selection[1];
+                    let rects = this.svg.selectAll("rect.electoralVotes")
+                        .each(function (d, i) {
+                            let start = parseFloat(d3.select(this).attr("x"));
+                            let end = start + parseFloat(d3.select(this).attr("width"));
+                            if (start >= brushstart && end <= brushend) {
+                                result.push(d);
+                            }
+                        })
+                }
+                shiftChart.update(result);
+            });
+        this.svg.append("g").attr("class", "brush").call(brush);
     };
 
     
