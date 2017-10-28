@@ -204,3 +204,13 @@ h3{
 .solidtick text {
     font-size: 18px;
 }
+
+.tooltip {
+    position: absolute;
+    width: auto;
+    height: auto;
+    border-radius: 5px;
+    background-color: #EEEEEE;
+    font-size: 10px;
+    padding: 3px;
+}
