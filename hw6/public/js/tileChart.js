@@ -112,8 +112,8 @@ class TileChart {
                         "winner":d.State_Winner,
                         "electoralVotes" : d.Total_EV,
                         "result":[
-                            {"nominee": d.D_Nominee_prop,"votecount": d.D_Votes_Total,"percentage": d.D_PopularPercentage,"party":"D"} ,
-                            {"nominee": d.R_Nominee_prop,"votecount": d.R_Votes_Total,"percentage": d.R_PopularPercentage,"party":"R"} ,
+                            {"nominee": d.D_Nominee_prop,"votecount": d.D_Votes_Total,"percentage": d.D_Percentage,"party":"D"} ,
+                            {"nominee": d.R_Nominee_prop,"votecount": d.R_Votes_Total,"percentage": d.R_Percentage,"party":"R"} ,
                         ]
                     }
                 } else {
@@ -122,9 +122,9 @@ class TileChart {
                         "winner":d.State_Winner,
                         "electoralVotes" : d.Total_EV,
                         "result":[
-                            {"nominee": d.D_Nominee_prop,"votecount": d.D_Votes_Total,"percentage": d.D_PopularPercentage,"party":"D"} ,
-                            {"nominee": d.R_Nominee_prop,"votecount": d.R_Votes_Total,"percentage": d.R_PopularPercentage,"party":"R"} ,
-                            {"nominee": d.I_Nominee_prop,"votecount": d.I_Votes_Total,"percentage": d.I_PopularPercentage,"party":"I"}
+                            {"nominee": d.D_Nominee_prop,"votecount": d.D_Votes_Total,"percentage": d.D_Percentage,"party":"D"} ,
+                            {"nominee": d.R_Nominee_prop,"votecount": d.R_Votes_Total,"percentage": d.R_Percentage,"party":"R"} ,
+                            {"nominee": d.I_Nominee_prop,"votecount": d.I_Votes_Total,"percentage": d.I_Percentage,"party":"I"}
                         ]
                     }
                 }
@@ -166,7 +166,11 @@ class TileChart {
             .attr("height", function () {
                 return yScale(1);
             })
-            .attr("class", "tile")
+            .attr("class", function (d) {
+                if (d["State_Winner"] == "I")
+                    return "tile independent"
+                return "tile"
+            })
             .attr("fill", function (d) {
                 return colorScale(d["RD_Difference"]);
             })

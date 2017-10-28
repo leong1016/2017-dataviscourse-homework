@@ -85,8 +85,8 @@ class YearChart {
         let line = this.svg.append("g").append("line")
             .attr("x1", 0)
             .attr("x2", this.svgWidth)
-            .attr("y1", this.svgHeight / 2)
-            .attr("y2", this.svgHeight / 2)
+            .attr("y1", this.svgHeight / 3)
+            .attr("y2", this.svgHeight / 3)
             .attr("class", "lineChart")
 
     // Create the chart by adding circle elements representing each election year
@@ -100,7 +100,7 @@ class YearChart {
             .attr("cx", function (d) {
                 return xScale(d.YEAR);
             })
-            .attr("cy", this.svgHeight / 2)
+            .attr("cy", this.svgHeight / 3)
             .attr("r", this.svgHeight / 6)
             .attr("class", function (d) {
                 return chooseClass(d.PARTY);
@@ -121,7 +121,7 @@ class YearChart {
             .attr("x", function (d) {
                 return xScale(d.YEAR)
             })
-            .attr("y", this.svgHeight / 1)
+            .attr("y", this.svgHeight - 20)
             .attr("class", "yeartext")
             .text(function (d) {
                 return d.YEAR;
@@ -151,7 +151,24 @@ class YearChart {
     //Implement a call back method to handle the brush end event.
     //Call the update method of shiftChart and pass the data corresponding to brush selection.
     //HINT: Use the .brush class to style the brush.
-
+        let brush = d3.brushX()
+            .extent([[0, this.svgHeight - 45],[this.svgWidth, this.svgHeight - 10]])
+            .on("end", d => {
+                let result = [];
+                if (d3.event.selection != null) {
+                    let brushstart = d3.event.selection[0];
+                    let brushend = d3.event.selection[1];
+                    let texts = this.svg.selectAll("text")
+                        .each(function (d, i) {
+                            let pos = parseFloat(d3.select(this).attr("x"));
+                            if (pos >= brushstart && pos <= brushend) {
+                                result.push(d.YEAR);
+                            }
+                        })
+                }
+                shiftChart.update(result, true);
+            });
+        this.svg.append("g").attr("class", "brush").call(brush);
     };
 
 };

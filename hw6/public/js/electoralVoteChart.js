@@ -143,7 +143,10 @@ class ElectoralVoteChart {
                     case 1:
                         return xScale(totalI + totalR + totalD);
                     case 2:
-                        return xScale(totalI);
+                        if (totalI == 0)
+                            return 0;
+                        else
+                            return xScale(totalI) + 50;
                 }
             })
             .attr("y", this.svgHeight / 2 - 5)
@@ -205,11 +208,11 @@ class ElectoralVoteChart {
                             let start = parseFloat(d3.select(this).attr("x"));
                             let end = start + parseFloat(d3.select(this).attr("width"));
                             if (start >= brushstart && end <= brushend) {
-                                result.push(d);
+                                result.push(d.State);
                             }
                         })
                 }
-                shiftChart.update(result);
+                shiftChart.update(result, false);
             });
         this.svg.append("g").attr("class", "brush").call(brush);
     };

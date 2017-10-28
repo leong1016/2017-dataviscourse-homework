@@ -163,7 +163,10 @@ class VotePercentageChart {
                     case 1:
                         return xScale(rp+dp+ip);
                     case 2:
-                        return xScale(ip);
+                        if (ip == 0)
+                            return 0;
+                        else
+                            return xScale(rp+dp+ip) / 4;
                 }
             })
             .attr("y", this.svgHeight / 2 - 5)
@@ -195,7 +198,10 @@ class VotePercentageChart {
                     case 1:
                         return xScale(rp+dp+ip);
                     case 2:
-                        return xScale(ip);
+                        if (ip == 0)
+                            return 0;
+                        else
+                            return xScale(rp+dp+ip) / 4;
                 }
             })
             .attr("y", this.svgHeight / 2 - 50)
