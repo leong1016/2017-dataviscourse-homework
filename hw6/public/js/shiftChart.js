@@ -111,9 +111,6 @@ class ShiftChart {
                 return colorScale2(i);
             })
         let yAxisLine = yAxisTick.selectAll("line")
-            .attr("stroke", function (i) {
-                return colorScale2(i);
-            })
 
         let tooltip = d3.select("#shiftChart").append("div")
             .attr("class", "tooltip")
