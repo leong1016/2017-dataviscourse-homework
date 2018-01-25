@@ -189,7 +189,7 @@ h3{
     stroke-dasharray: 4;
 }
 
-.tick {
+.dashedtick {
     stroke-dasharray: 1, 3;
 }
 
